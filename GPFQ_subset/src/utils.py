@@ -63,8 +63,12 @@ def test_accuracy(model, test_dl, device, topk=(1, )):
     model.eval()
     maxk = max(topk)
     topk_count = np.zeros((len(topk), len(test_dl)))
-    class_names = ['n01440764', 'n02102040', 'n02979186', 'n03000684', 'n03028079', 
+    imagenette_class_names = ['n01440764', 'n02102040', 'n02979186', 'n03000684', 'n03028079', 
                'n03394916', 'n03417042', 'n03425413', 'n03445777', 'n03888257']
+    imagewoof_class_names = ['n02086240', 'n02088364', 'n02093754', 'n02099601', 'n02111889', 
+                                 'n02087394', 'n02089973', 'n02096294', 'n02105641', 'n02115641']
+        
+    class_names = imagenette_class_names # CHANGE
     with open('../data/ILSVRC2012/wnid_to_label.pickle', 'rb') as f:
             class_name_to_idx = pickle.load(f)
     mapping = {i: class_name_to_idx[class_names[i]] for i in range(10)}
