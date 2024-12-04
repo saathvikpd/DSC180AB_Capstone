@@ -48,27 +48,26 @@ def parse_imagenet_val_labels(data_dir):
     with open(label_path, 'rb') as f:
         wnid_to_label = pickle.load(f)
     
-    val_labels = [wnid_to_label[wnid] for wnid in val_wnids if wnid in ['n01440764', 'n02102040', 'n02979186', \
-                                                                        'n03000684', 'n03028079', 'n03394916', \
-                                                                        'n03417042', 'n03425413', 'n03445777', 
-                                                                        'n03888257']]
+    val_labels = [wnid_to_label[wnid] for wnid in val_wnids]
     print(f"LABELS: {val_labels}")
     return np.array(val_labels)
 
 
-def test_accuracy(model, test_dl, device, topk=(1, )):
+def test_accuracy(model, test_dl, device, subset, topk=(1, )):
     """ 
     Compute top k accuracy on testing dataset
     """
     model.eval()
     maxk = max(topk)
     topk_count = np.zeros((len(topk), len(test_dl)))
-    imagenette_class_names = ['n01440764', 'n02102040', 'n02979186', 'n03000684', 'n03028079', 
-               'n03394916', 'n03417042', 'n03425413', 'n03445777', 'n03888257']
-    imagewoof_class_names = ['n02086240', 'n02088364', 'n02093754', 'n02099601', 'n02111889', 
-                                 'n02087394', 'n02089973', 'n02096294', 'n02105641', 'n02115641']
+    if subset == 'Imagenette':
+        class_names = ['n01440764', 'n02102040', 'n02979186', 'n03000684', 'n03028079', 
+            'n03394916', 'n03417042', 'n03425413', 'n03445777', 'n03888257']
+    else:
+        class_names = ['n02086240', 'n02088364', 'n02093754', 'n02099601', 'n02111889', 
+            'n02087394', 'n02089973', 'n02096294', 'n02105641', 'n02115641']
         
-    class_names = imagenette_class_names # CHANGE
+    # class_names = class_names # CHANGE
     with open('../data/ILSVRC2012/wnid_to_label.pickle', 'rb') as f:
             class_name_to_idx = pickle.load(f)
     mapping = {i: class_name_to_idx[class_names[i]] for i in range(10)}

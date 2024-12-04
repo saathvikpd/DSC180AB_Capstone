@@ -42,7 +42,7 @@ class Imagenet(Dataset):
         return x, y
 
 
-def data_loader(ds_name, batch_size, num_workers): 
+def data_loader(ds_name, batch_size, num_workers, subset): 
     """
     Prepare data loaders
     """
@@ -60,16 +60,19 @@ def data_loader(ds_name, batch_size, num_workers):
                             transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                             std=[0.229, 0.224, 0.225])
                             ])
-        
-        train_ds = torchvision.datasets.ImageFolder(os.path.join(data_dir, 'imagenette2/train'), #CHANGE
-                                                    transform=transform)
-        imagenette_class_names = ['n01440764', 'n02102040', 'n02979186', 'n03000684', 'n03028079', 
+        if subset == 'Imagenette':
+            image_folder = 'imagenette2'
+            class_names = ['n01440764', 'n02102040', 'n02979186', 'n03000684', 'n03028079', 
                'n03394916', 'n03417042', 'n03425413', 'n03445777', 'n03888257']
+        else:
+            image_folder = 'imagewoof2'
+            class_names = ['n02086240', 'n02088364', 'n02093754', 'n02099601', 'n02111889', 
+                'n02087394', 'n02089973', 'n02096294', 'n02105641', 'n02115641']
         
-        imagewoof_class_names = ['n02086240', 'n02088364', 'n02093754', 'n02099601', 'n02111889', 
-                                 'n02087394', 'n02089973', 'n02096294', 'n02105641', 'n02115641']
+        train_ds = torchvision.datasets.ImageFolder(os.path.join(data_dir, f'{image_folder}/train'), #CHANGE
+                                                    transform=transform)
         
-        class_names = imagenette_class_names
+        # class_names = class_names
         
         class_to_idx = {name: idx for idx, name in enumerate(class_names)}
 #         class_name_to_idx = {class_name: idx for class_name, idx in train_ds.class_to_idx.items()}
@@ -87,7 +90,7 @@ def data_loader(ds_name, batch_size, num_workers):
         for class_name in class_names:
             print(f'Class Name: {class_name}, Index: {class_name_to_idx[class_name]}')
 #         test_ds = Imagenet(os.path.join(data_dir, 'imagenette2/val'), transform) 
-        test_ds = torchvision.datasets.ImageFolder(os.path.join(data_dir, 'imagenette2/val'),
+        test_ds = torchvision.datasets.ImageFolder(os.path.join(data_dir, f'{image_folder}/val'),
                                                     transform=transform)
         train_dl = DataLoader(train_ds, batch_size, shuffle=True, num_workers=num_workers,
                                 worker_init_fn=seed_worker, generator=g)

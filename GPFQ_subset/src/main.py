@@ -40,6 +40,7 @@ parser.add_argument('--ignore_layer', '-ig', default=[], type=int, nargs='+',
                     help='indices of unquantized layers')
 parser.add_argument('-seed', default=0, type=int, help='set random seed')
 parser.add_argument('--fusion', '-f', action='store_true', help='fusing CNN and BN layers')
+parser.add_argument('--subset', '-sb', default='Imagenette', type=str, help='Imagenette or Imagewoof')
 
 args = parser.parse_args()
 
@@ -101,7 +102,7 @@ def main(b, mlp_s, cnn_s, bs, mlp_per, cnn_per, l):
     
     
     # load the data loader for training and testing
-    train_loader, test_loader = data_loader(args.data_set, batch_size, args.num_worker)
+    train_loader, test_loader = data_loader(args.data_set, batch_size, args.num_worker, args.subset)
     
     # quantize the neural net
     quantizer = QuantizeNeuralNet(model, args.model, batch_size, 
@@ -142,19 +143,20 @@ def main(b, mlp_s, cnn_s, bs, mlp_per, cnn_per, l):
     if args.model in original_accuracy_table:
         print(f'\nUsing the original model accuracy from pytorch.\n')
         original_topk_accuracy = original_accuracy_table[args.model]
-    else:
+    if args.model in original_accuracy_table and args.subset:
         print(f'\nEvaluting the original model to get its accuracy\n')
-        original_topk_accuracy = test_accuracy(model, test_loader, device, topk)
+        print('USING SUBSET')
+        original_topk_accuracy = test_accuracy(model, test_loader, device, args.subset, topk)
     
-    print(f'Top-1 accuracy of {args.model} is {original_topk_accuracy[0]}.')
-    print(f'Top-5 accuracy of {args.model} is {original_topk_accuracy[1]}.')
+    print(f'Top-1 accuracy of {args.model} with data {args.subset} is {original_topk_accuracy[0]}.')
+    print(f'Top-5 accuracy of {args.model} with data {args.subset} is {original_topk_accuracy[1]}.')
     
     start_time = datetime.now()
 
     print(f'\n Evaluting the quantized model to get its accuracy\n')
-    topk_accuracy = test_accuracy(quantized_model, test_loader, device, topk)
-    print(f'Top-1 accuracy of quantized {args.model} is {topk_accuracy[0]}.')
-    print(f'Top-5 accuracy of quantized {args.model} is {topk_accuracy[1]}.')
+    topk_accuracy = test_accuracy(quantized_model, test_loader, device, args.subset, topk)
+    print(f'Top-1 accuracy of quantized {args.model} with data {args.subset} is {topk_accuracy[0]}.')
+    print(f'Top-5 accuracy of quantized {args.model} with data {args.subset} is {topk_accuracy[1]}.')
 
     end_time = datetime.now()
 
