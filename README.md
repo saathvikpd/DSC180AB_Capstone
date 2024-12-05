@@ -70,4 +70,8 @@ mv ./GPFQ_modified_files/wnid_to_label_org.pickle ./Quantized_Neural_Nets/data/I
 
 Follow the instructions in ./Quantized_Neural_Nets/README.md to run the code for GPFQ
 
+## GPFQ algorithm applied to ResNet-18 using ImageNette and ImageWoof for calibration:
+
+Reference the folder ```./GPFQ_subset```
+
 
