@@ -1,3 +1,14 @@
+## CNN Quantization & Evaluation on ImageNet Subset
+
+Authors:
+- Saathvik Dirisala
+- Jessica Hung
+- Ari Juljulian
+
+This repository is contains various experiments we conducted over the course of the quarter as a part of DSC 180A. Our overarching research question has been: How is quantizibiltiy of CNNs impacted by the distribution of the calibration data?
+
+In order to answer this question, we mainly focused our experimentation on the GPFQ algorithm, which reported impressively low loss in accuracy even in 3-bit precision. We also experimented with toy models and simple quantization techniques to understand the algorithmic foundations of quantization. Altogether, our experimentation has allowed us to answer some important questions related to our project and also lay out a path for future research.
+
 ## Quantization Experiments
 
 ### Create and activate python environment
